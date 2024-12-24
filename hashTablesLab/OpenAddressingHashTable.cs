@@ -32,18 +32,24 @@ public class OpenAddressingHashTable : IHashTable
         int i = 0;
         int index;
 
+        if (Convert.ToInt32(key) < 0 || Convert.ToInt32(key) >= _tableSize)
+        {
+            Console.WriteLine($"Ключ {key} должен быть в пределах от 0 до {_tableSize - 1}. Вставка не выполнена.");
+            return;
+        }
+
         while (i < _tableSize)
         {
             index = (hash + _probingFunction.Hash(key, i, _tableSize)) % _tableSize;
 
-            if (Convert.ToInt32(key) < 0 || Convert.ToInt32(key) >= _tableSize)
+            if (_table[index].Key != null && !_table[index].Key.Equals("[deleted]") && _table[index].Key.Equals(key))
             {
-                Console.WriteLine($"Ключ {key} должен быть в пределах от 0 до {_tableSize - 1}. Вставка не выполнена.");
+                Console.WriteLine($"Элемент с ключом {key} уже существует. Вставка не выполнена.");
                 return;
             }
             if (_table[index].Key == null || _table[index].Key.Equals("[deleted]"))
             {
-                _table[index] = (key, value);  // Вставляем элемент
+                _table[index] = (key, value);
                 Console.WriteLine($"Элемент с ключом {key} успешно вставлен.");
                 return;
             }

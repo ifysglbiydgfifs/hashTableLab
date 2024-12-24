@@ -30,6 +30,7 @@ namespace hashTablesLab
                         hashTable = ChooseOpenHashFunction();
                         break;
                     case 3:
+                        HashTableTester.CompareHashFunctions();
                         break;
                     default:
                         Console.WriteLine("Неверный выбор");
@@ -51,7 +52,11 @@ namespace hashTablesLab
                 Console.WriteLine("Выберите хеш-функцию:");
                 Console.WriteLine("1 - Хеш-функция на основе деления");
                 Console.WriteLine("2 - Хеш-функция на основе умножения");
-                Console.WriteLine("3 - Хеш-функция на основе суммирования");
+                Console.WriteLine("3 - Secure Hash Algorithm 256-bit");
+                Console.WriteLine("4 - Secure Hash Algorithm 256-bit");
+                Console.WriteLine("5 - FNV-1");
+                Console.WriteLine("6 - MurmurHash3");
+                
                 Console.WriteLine("0 - Выход");
 
                 int hashFunctionOption = ParseInput();
@@ -64,7 +69,16 @@ namespace hashTablesLab
                         hashFunction = new MultiplicationHashFunction();
                         break;
                     case 3:
-                        hashFunction = new SummingHashFunction();
+                        hashFunction = new SHA256HashFunction();
+                        break;
+                    case 4:
+                        hashFunction = new FNV1HashFunction();
+                        break;
+                    case 5:
+                        hashFunction = new MurmurHashFunction();
+                        break;
+                    case 6:
+                        hashFunction = new XORHashFunction();
                         break;
                     case 0:
                         return null;

@@ -42,6 +42,7 @@
     <ItemGroup>
         <Compile Include="ChainHashTable.cs" />
         <Compile Include="HashFunctions.cs" />
+        <Compile Include="HashTableTester.cs" />
         <Compile Include="IHashFunction.cs" />
         <Compile Include="IHashTable.cs" />
         <Compile Include="IOpenHashFunction.cs" />
