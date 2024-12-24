@@ -1,10 +1,7 @@
-namespace hashTablesLab
+namespace HashFunctions
 {
-    namespace HashTables
+    public interface IHashFunction
     {
-        public interface IHashFunction<K>
-        {
-            int Hash(K key, int tableSize);
-        }
+        int Hash(string key, int tableSize);
     }
 }

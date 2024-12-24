@@ -44,8 +44,10 @@
         <Compile Include="HashFunctions.cs" />
         <Compile Include="IHashFunction.cs" />
         <Compile Include="IHashTable.cs" />
+        <Compile Include="IOpenHashFunction.cs" />
         <Compile Include="LinkedList.cs" />
         <Compile Include="Node.cs" />
+        <Compile Include="OpenAddressingHashTable.cs" />
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>

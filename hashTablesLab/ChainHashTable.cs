@@ -1,30 +1,30 @@
 using System;
-using hashTablesLab.HashTables;
+using HashFunctions;
 using LinkedListUtil;
 
 namespace HashTables
 {
-    class ChainHashTable<K, V> : IHashTable<K, V>
+    class ChainHashTable : IHashTable
     {
         private const int _tableSize = 1000;
-        private LinkedList<K, V>[] table = new LinkedList<K, V>[_tableSize];
-        private IHashFunction<K> _hashFunction;
-        public ChainHashTable(IHashFunction<K> hashFunction)
+        private LinkedList<string, string>[] table = new LinkedList<string, string>[_tableSize];
+        private IHashFunction _hashFunction;
+        
+        public ChainHashTable(IHashFunction hashFunction)
         {
             _hashFunction = hashFunction;
 
             for (int i = 0; i < _tableSize; i++)
             {
-                table[i] = new LinkedList<K, V>();
+                table[i] = new LinkedList<string, string>();
             }
         }
-        private int GetHash(K key)
+        private int GetHash(string key)
         {
             return _hashFunction.Hash(key, _tableSize);
         }
-        public void Insert(K key, V value)
+        public void Insert(string key, string value)
         {
-            // Проверка, что ключ в пределах допустимого диапазона
             if (Convert.ToInt32(key) < 0 || Convert.ToInt32(key) >= _tableSize)
             {
                 Console.WriteLine($"Ключ {key} должен быть в пределах от 0 до {_tableSize - 1}. Вставка не выполнена.");
@@ -41,16 +41,18 @@ namespace HashTables
             Console.WriteLine($"Элемент с ключом {key} успешно вставлен.");
         }
 
-        public V Search(K key)
+        public string Search(string key)
         {
             int hash = GetHash(key);
             return table[hash].Search(key);
         }
-        public bool Delete(K key)
+
+        public bool Delete(string key)
         {
             int hash = GetHash(key);
             return table[hash].Delete(key);
         }
+
         public void Print()
         {
             bool isPrinted = false;

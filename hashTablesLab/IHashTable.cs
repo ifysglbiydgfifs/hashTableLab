@@ -1,10 +1,10 @@
 namespace HashTables
 {
-    public interface IHashTable<K, V>
+    public interface IHashTable
     {
-        V Search(K key);
-        void Insert(K key, V value);
-        bool Delete(K key);
+        string Search(string key);
+        void Insert(string key, string value);
+        bool Delete(string key);
         void Print();
     }
 }
