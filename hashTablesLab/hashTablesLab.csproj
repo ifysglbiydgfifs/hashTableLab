@@ -41,7 +41,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Functions\HashFunctions.cs" />
-        <Compile Include="Functions\IHashFunction.cs" />
+        <Compile Include="Functions\IChainHashFunction.cs" />
         <Compile Include="Functions\IOpenHashFunction.cs" />
         <Compile Include="HashTables\ChainHashTable.cs" />
         <Compile Include="HashTables\IHashTable.cs" />

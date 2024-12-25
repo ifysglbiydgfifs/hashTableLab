@@ -18,7 +18,7 @@ namespace HashFunctions
             return result;
         }
     }
-    public class DivisionHashFunction : IHashFunction
+    public class DivisionHashFunction : IChainHashFunction
     {
         public int Hash(string key, int tableSize)
         {
@@ -27,7 +27,7 @@ namespace HashFunctions
             return Math.Abs(intKey % tableSize);
         }
     }
-    public class MultiplicationHashFunction : IHashFunction
+    public class MultiplicationHashFunction : IChainHashFunction
     {
         private const double A = 0.6180339887;
         public int Hash(string key, int tableSize)
@@ -38,7 +38,7 @@ namespace HashFunctions
             return Math.Abs((int)(tableSize * (intKey * A % 1)));
         }
     }
-    public class XORHashFunction : IHashFunction
+    public class XORHashFunction : IChainHashFunction
     {
         public int Hash(string key, int tableSize)
         {
@@ -53,7 +53,7 @@ namespace HashFunctions
         }
     }
     
-    public class SHA256HashFunction : IHashFunction
+    public class SHA256HashFunction : IChainHashFunction
     {
         public int Hash(string key, int tableSize)
         {
@@ -66,7 +66,7 @@ namespace HashFunctions
         }
     }
     
-    public class FNV1HashFunction : IHashFunction
+    public class FNV1HashFunction : IChainHashFunction
     {
         private const uint FNV_OFFSET_BASIS = 0x811C9DC5;
         private const uint FNV_32_PRIME = 0x01000193;
@@ -84,7 +84,7 @@ namespace HashFunctions
         }
     }
 
-    public class MurmurHashFunction : IHashFunction
+    public class MurmurHashFunction : IChainHashFunction
     {
         public int Hash(string key, int tableSize)
         {
@@ -133,21 +133,23 @@ namespace HashFunctions
     {
         public int Hash(string key, int i, int tableSize)
         {
-            return i;
+            return (Math.Abs(key.GetHashCode()) + i) % tableSize;
         }
     }
     public class QuadraticProbing : IOpenHashFunction
     {
         public int Hash(string key, int i, int tableSize)
         {
-            return i * i;
+            int initialIndex = Math.Abs(key.GetHashCode()) % tableSize;
+            return (initialIndex + i * i) % tableSize;
         }
     }
+
     public class DoubleHashing : IOpenHashFunction
     {
-        private IHashFunction secondHashFunction;
+        private IChainHashFunction secondHashFunction;
 
-        public DoubleHashing(IHashFunction secondHashFunction)
+        public DoubleHashing(IChainHashFunction secondHashFunction)
         {
             this.secondHashFunction = secondHashFunction;
         }
@@ -159,25 +161,6 @@ namespace HashFunctions
             return (hash1 + i * hash2) % tableSize;
         }
     }
-    public class TwoDimensionalProbing : IOpenHashFunction
-    {
-        private IHashFunction hashFunction1;
-        private IHashFunction hashFunction2;
-
-        public TwoDimensionalProbing(IHashFunction hashFunction1, IHashFunction hashFunction2)
-        {
-            this.hashFunction1 = hashFunction1;
-            this.hashFunction2 = hashFunction2;
-        }
-
-        public int Hash(string key, int i, int tableSize)
-        {
-            int hash1 = hashFunction1.Hash(key, tableSize);
-            int hash2 = hashFunction2.Hash(key, tableSize);
-            return (hash1 + i * hash2 + i * i) % tableSize;
-        }
-    }
-    
     public class ExponentialProbing : IOpenHashFunction
     {
         public int Hash(string key, int i, int tableSize)

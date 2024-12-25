@@ -92,7 +92,7 @@ namespace hashTablesLab
         }
         static IHashTable ChooseChainHashFunction()
         {
-            IHashFunction hashFunction = null;
+            IChainHashFunction hashFunction = null;
             Console.WriteLine("Выберите хеш-функцию:");
             Console.WriteLine("1 - Хеш-функция на основе деления");
             Console.WriteLine("2 - Хеш-функция на основе умножения");
@@ -153,7 +153,7 @@ namespace hashTablesLab
                     break;
                 case 3:
                     Console.WriteLine("Выберите вторую хеш-функцию для двойного хеширования:");
-                    IHashFunction secondHashFunction = ChooseSecondaryHashFunction();
+                    IChainHashFunction secondHashFunction = ChooseSecondaryHashFunction();
                     probingFunction = new DoubleHashing(secondHashFunction);
                     break;
                 case 4:
@@ -169,13 +169,13 @@ namespace hashTablesLab
             
 
             Console.WriteLine("Выберите вспомогательную хеш-функцию");
-            IHashFunction hashFunction = ChooseSecondaryHashFunction();
+            IChainHashFunction hashFunction = ChooseSecondaryHashFunction();
             return new OpenAddressingHashTable(hashFunction, probingFunction);
         }
 
-        static IHashFunction ChooseSecondaryHashFunction()
+        static IChainHashFunction ChooseSecondaryHashFunction()
         {
-            IHashFunction hashFunction = null;
+            IChainHashFunction hashFunction = null;
             Console.WriteLine("1 - Хеш-функция на основе деления");
             Console.WriteLine("2 - Хеш-функция на основе умножения");
             Console.WriteLine("3 - Хеш-функция на основе XOR");

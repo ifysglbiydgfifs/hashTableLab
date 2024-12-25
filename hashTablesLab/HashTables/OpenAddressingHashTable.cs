@@ -7,10 +7,10 @@ namespace HashTables
     {
         private const int _tableSize = 30;
         private (string Key, string Value)[] _table;
-        private IHashFunction _hashFunction;
+        private IChainHashFunction _hashFunction;
         private IOpenHashFunction _probingFunction;
 
-        public OpenAddressingHashTable(IHashFunction hashFunction, IOpenHashFunction probingFunction)
+        public OpenAddressingHashTable(IChainHashFunction hashFunction, IOpenHashFunction probingFunction)
         {
             _hashFunction = hashFunction;
             _probingFunction = probingFunction;
@@ -23,7 +23,6 @@ namespace HashTables
         }
         public object GetTable() => _table; 
         public int GetTableSize() => _tableSize;
-        
         public string Get(int index)
         {
             if (index < 0 || index >= _tableSize)
@@ -39,7 +38,6 @@ namespace HashTables
         {
             return _hashFunction.Hash(key, _tableSize);
         }
-
         public void Insert(string key, string value)
         {
             int hash = GetHash(key);
@@ -49,20 +47,17 @@ namespace HashTables
             while (i < _tableSize)
             {
                 index = (hash + _probingFunction.Hash(key, i, _tableSize)) % _tableSize;
-
                 if (_table[index].Key != null && !_table[index].Key.Equals("[deleted]") && _table[index].Key.Equals(key))
                 {
                     Console.WriteLine($"Элемент с хешкодом {hash} [{key}:{value}] уже существует. Вставка не выполнена.");
                     return;
                 }
-
                 if (_table[index].Key == null || _table[index].Key.Equals("[deleted]"))
                 {
                     _table[index] = (key, value);
                     Console.WriteLine($"Элемент с хешкодом {hash} [{key}:{value}] успешно вставлен.");
                     return;
                 }
-
                 i++;
             }
 

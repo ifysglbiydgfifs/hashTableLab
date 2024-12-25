@@ -1,6 +1,6 @@
 namespace HashFunctions
 {
-    public interface IHashFunction
+    public interface IChainHashFunction
     {
         int Hash(string key, int tableSize);
     }

@@ -9,9 +9,9 @@ namespace HashTables
         private const int _tableSize = 1000;
         private int _elementCount = 0;
         private LinkedList<string, string>[] _table = new LinkedList<string, string>[_tableSize];
-        private IHashFunction _hashFunction;
+        private IChainHashFunction _hashFunction;
         
-        public ChainHashTable(IHashFunction hashFunction)
+        public ChainHashTable(IChainHashFunction hashFunction)
         {
             _hashFunction = hashFunction;
             for (int i = 0; i < _tableSize; i++)
@@ -19,7 +19,6 @@ namespace HashTables
                 _table[i] = new LinkedList<string, string>();
             }
         }
-
         public object GetTable() => _table;
         public int GetTableSize() => _tableSize;
         
@@ -41,14 +40,12 @@ namespace HashTables
                 Console.WriteLine("Таблица заполнена, вставка невозможна.");
                 return;
             }
-
             int hash = GetHash(key);
             if (_table[hash].Search(key) != null)
             {
                 Console.WriteLine($"Элемент с хешкодом {hash} [{key}:{value}] уже существует. Вставка не выполнена.");
                 return;
             }
-        
             _table[hash].Insert(key, value);
             _elementCount++;
             Console.WriteLine($"Элемент с хешкодом {hash} [{key}:{value}] успешно вставлен.");
