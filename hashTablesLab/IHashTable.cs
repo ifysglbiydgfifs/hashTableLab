@@ -6,5 +6,8 @@ namespace HashTables
         void Insert(string key, string value);
         bool Delete(string key);
         void Print();
+        object GetTable();
+        int GetTableSize();
+
     }
 }

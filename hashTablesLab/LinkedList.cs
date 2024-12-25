@@ -57,6 +57,21 @@ namespace LinkedListUtil
 
             return false;
         }
+        public int Count
+        {
+            get
+            {
+                int count = 0;
+                var current = Head;
+                while (current != null)
+                {
+                    count++;
+                    current = current.Next;
+                }
+                return count;
+            }
+        }
+
         public void Print()
         {
             var current = Head;

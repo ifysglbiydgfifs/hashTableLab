@@ -1,7 +1,6 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
-using HashFunctions;
 
 namespace HashFunctions
 {
@@ -43,16 +42,13 @@ namespace HashFunctions
     {
         public int Hash(string key, int tableSize)
         {
-            uint hash = 0;  // Initialize the hash value
+            uint hash = 0;
 
             foreach (char c in key)
             {
-                // XOR the current character with the hash
-                hash ^= (uint)c;  // Perform XOR with the character's ASCII value
-                hash *= 16777619;  // Multiply by a prime number to help with dispersion
+                hash ^= (uint)c;
+                hash *= 16777619;
             }
-
-            // Return the hash value mod table size to fit the table
             return (int)(hash % (uint)tableSize);
         }
     }
@@ -63,21 +59,17 @@ namespace HashFunctions
         {
             using (SHA256 sha256 = SHA256.Create())
             {
-                // Convert the string to a byte array and compute the hash
                 byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(key));
-
-                // Take the first 4 bytes of the hash and convert it to an integer
                 int hash = BitConverter.ToInt32(hashBytes, 0);
-
-                return Math.Abs(hash % tableSize); // Return the hash mod tableSize to fit the table size
+                return Math.Abs(hash % tableSize);
             }
         }
     }
     
     public class FNV1HashFunction : IHashFunction
     {
-        private const uint FNV_OFFSET_BASIS = 0x811C9DC5; // FNV-1 offset basis
-        private const uint FNV_32_PRIME = 0x01000193;    // FNV-1 prime
+        private const uint FNV_OFFSET_BASIS = 0x811C9DC5;
+        private const uint FNV_32_PRIME = 0x01000193;
 
         public int Hash(string key, int tableSize)
         {
@@ -85,12 +77,9 @@ namespace HashFunctions
 
             foreach (char c in key)
             {
-                // Perform the FNV-1 hash calculation
-                hash ^= (uint)c;             // XOR the byte
-                hash *= FNV_32_PRIME;        // Multiply by the FNV prime
+                hash ^= (uint)c;
+                hash *= FNV_32_PRIME;
             }
-
-            // Return the hash mod the table size
             return (int)(hash % (uint)tableSize);
         }
     }
@@ -100,28 +89,24 @@ namespace HashFunctions
         public int Hash(string key, int tableSize)
         {
             byte[] data = Encoding.UTF8.GetBytes(key);
-            uint hash = 0xc58f95f4; // MurmurHash3 default seed value
+            uint hash = 0xc58f95f4;
             int length = data.Length;
             int index = 0;
-
-            // Process each 4-byte chunk
             while (length >= 4)
             {
                 uint k = (uint)(data[index] | data[index + 1] << 8 | data[index + 2] << 16 | data[index + 3] << 24);
                 index += 4;
 
                 k *= 0xcc9e2d51;
-                k = (k << 15) | (k >> 17); // Rotate left by 15 bits
+                k = (k << 15) | (k >> 17);
                 k *= 0x1b873593;
 
                 hash ^= k;
-                hash = (hash << 13) | (hash >> 19); // Rotate left by 13 bits
+                hash = (hash << 13) | (hash >> 19);
                 hash = hash * 5 + 0xe6546b64;
 
                 length -= 4;
             }
-
-            // Process remaining bytes (less than 4)
             if (length > 0)
             {
                 uint k = 0;
@@ -135,23 +120,15 @@ namespace HashFunctions
 
                 hash ^= k;
             }
-
-            // Finalization
             hash ^= (uint)data.Length;
             hash ^= hash >> 16;
             hash *= 0x85ebca6b;
             hash ^= hash >> 13;
             hash *= 0xc2b2ae35;
             hash ^= hash >> 16;
-
-            // Return the result mod tableSize
             return Math.Abs((int)(hash % (uint)tableSize));
         }
     }
-
-    
-    
-    
     public class LinearProbing : IOpenHashFunction
     {
         public int Hash(string key, int i, int tableSize)

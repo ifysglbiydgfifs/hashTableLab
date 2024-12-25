@@ -2,6 +2,7 @@
 using HashFunctions;
 using HashFunctions;
 using HashTables;
+using HashTablesTester;
 
 namespace hashTablesLab
 {
@@ -30,7 +31,8 @@ namespace hashTablesLab
                         hashTable = ChooseOpenHashFunction();
                         break;
                     case 3:
-                        HashTableTester.CompareHashFunctions();
+                        RunTests();
+
                         break;
                     default:
                         Console.WriteLine("Неверный выбор");
@@ -43,83 +45,110 @@ namespace hashTablesLab
                 }
             }
         }
+        static void RunTests()
+        {
+            Console.WriteLine("Выберите тест для запуска:");
+            Console.WriteLine("1. Тестирование хэш-таблицы с цепочками.");
+            Console.WriteLine("2. Тестирование хэш-таблицы с открытой адресацией.");
+            Console.WriteLine("0. Назад.");
 
+            int testOption = ParseInput();
+
+            IHashTableTester tester = null;
+            IHashTable hashTable = null;
+
+            switch (testOption)
+            {
+                case 1:
+                    hashTable = ChooseChainHashFunction();
+                    tester = new ChainTester();
+                    break;
+                case 2:
+                    hashTable = ChooseOpenHashFunction();
+                    tester = new OpenAddressingTester();
+                    break;
+                case 0:
+                    return;
+                default:
+                    Console.WriteLine("Неверный выбор теста.");
+                    return;
+            }
+
+            if (hashTable != null && tester != null)
+            {
+                tester.RunTests(hashTable);
+            }
+        }
         static IHashTable ChooseChainHashFunction()
         {
             IHashFunction hashFunction = null;
-            while (hashFunction == null)
+            Console.WriteLine("Выберите хеш-функцию:");
+            Console.WriteLine("1 - Хеш-функция на основе деления");
+            Console.WriteLine("2 - Хеш-функция на основе умножения");
+            Console.WriteLine("3 - Хеш-функция на основе XOR");
+            Console.WriteLine("4 - Secure Hash Algorithm 256-bit");
+            Console.WriteLine("5 - FNV-1");
+            Console.WriteLine("6 - MurmurHash3");
+            
+            Console.WriteLine("0 - Выход");
+
+            int hashFunctionOption = ParseInput();
+            switch (hashFunctionOption)
             {
-                Console.WriteLine("Выберите хеш-функцию:");
-                Console.WriteLine("1 - Хеш-функция на основе деления");
-                Console.WriteLine("2 - Хеш-функция на основе умножения");
-                Console.WriteLine("3 - Secure Hash Algorithm 256-bit");
-                Console.WriteLine("4 - Secure Hash Algorithm 256-bit");
-                Console.WriteLine("5 - FNV-1");
-                Console.WriteLine("6 - MurmurHash3");
-                
-                Console.WriteLine("0 - Выход");
-
-                int hashFunctionOption = ParseInput();
-                switch (hashFunctionOption)
-                {
-                    case 1:
-                        hashFunction = new DivisionHashFunction();
-                        break;
-                    case 2:
-                        hashFunction = new MultiplicationHashFunction();
-                        break;
-                    case 3:
-                        hashFunction = new SHA256HashFunction();
-                        break;
-                    case 4:
-                        hashFunction = new FNV1HashFunction();
-                        break;
-                    case 5:
-                        hashFunction = new MurmurHashFunction();
-                        break;
-                    case 6:
-                        hashFunction = new XORHashFunction();
-                        break;
-                    case 0:
-                        return null;
-                    default:
-                        Console.WriteLine("Неверный выбор");
-                        continue;
-                }
+                case 1:
+                    hashFunction = new DivisionHashFunction();
+                    break;
+                case 2:
+                    hashFunction = new MultiplicationHashFunction();
+                    break;
+                case 3:
+                    hashFunction = new SHA256HashFunction();
+                    break;
+                case 4:
+                    hashFunction = new FNV1HashFunction();
+                    break;
+                case 5:
+                    hashFunction = new MurmurHashFunction();
+                    break;
+                case 6:
+                    hashFunction = new XORHashFunction();
+                    break;
+                case 0:
+                    return null;
+                default:
+                    Console.WriteLine("Неверный выбор");
+                    break;
             }
-
             return new ChainHashTable(hashFunction);
         }
         
         static IHashTable ChooseOpenHashFunction()
         {
             IOpenHashFunction probingFunction = null;
-            while (probingFunction == null)
-            {
-                Console.WriteLine("Выберите метод разрешения коллизий:");
-                Console.WriteLine("1 - Линейное пробирование");
-                Console.WriteLine("2 - Квадратичное пробирование");
-                Console.WriteLine("3 - Двойное хеширование");
+            Console.WriteLine("Выберите метод разрешения коллизий:");
+            Console.WriteLine("1 - Линейное пробирование");
+            Console.WriteLine("2 - Квадратичное пробирование");
+            Console.WriteLine("3 - Двойное хеширование");
 
-                int probingOption = ParseInput();
-                switch (probingOption)
-                {
-                    case 1:
-                        probingFunction = new LinearProbing();
-                        break;
-                    case 2:
-                        probingFunction = new QuadraticProbing();
-                        break;
-                    case 3:
-                        Console.WriteLine("Выберите вторую хеш-функцию для двойного хеширования:");
-                        IHashFunction secondHashFunction = ChooseSecondaryHashFunction();
-                        probingFunction = new DoubleHashing(secondHashFunction);
-                        break;
-                    default:
-                        Console.WriteLine("Неверный выбор метода пробирования.");
-                        continue;
-                }
+            int probingOption = ParseInput();
+            switch (probingOption)
+            {
+                case 1:
+                    probingFunction = new LinearProbing();
+                    break;
+                case 2:
+                    probingFunction = new QuadraticProbing();
+                    break;
+                case 3:
+                    Console.WriteLine("Выберите вторую хеш-функцию для двойного хеширования:");
+                    IHashFunction secondHashFunction = ChooseSecondaryHashFunction();
+                    probingFunction = new DoubleHashing(secondHashFunction);
+                    break;
+                default:
+                    Console.WriteLine("Неверный выбор метода пробирования.");
+                    break;
             }
+            
 
             Console.WriteLine("Выберите вспомогательную хеш-функцию");
             IHashFunction hashFunction = ChooseSecondaryHashFunction();
@@ -130,28 +159,26 @@ namespace hashTablesLab
         static IHashFunction ChooseSecondaryHashFunction()
         {
             IHashFunction hashFunction = null;
-            while (hashFunction == null)
-            {
-                Console.WriteLine("1 - Хеш-функция на основе деления");
-                Console.WriteLine("2 - Хеш-функция на основе умножения");
-                Console.WriteLine("0 - Выход");
+            Console.WriteLine("1 - Хеш-функция на основе деления");
+            Console.WriteLine("2 - Хеш-функция на основе умножения");
+            Console.WriteLine("0 - Выход");
 
-                int hashFunctionOption = ParseInput();
-                switch (hashFunctionOption)
-                {
-                    case 1:
-                        hashFunction = new DivisionHashFunction();
-                        break;
-                    case 2:
-                        hashFunction = new MultiplicationHashFunction();
-                        break;
-                    case 0:
-                        return null;
-                    default:
-                        Console.WriteLine("Неверный выбор.");
-                        continue;
-                }
+            int hashFunctionOption = ParseInput();
+            switch (hashFunctionOption)
+            {
+                case 1:
+                    hashFunction = new DivisionHashFunction();
+                    break;
+                case 2:
+                    hashFunction = new MultiplicationHashFunction();
+                    break;
+                case 0:
+                    return null;
+                default:
+                    Console.WriteLine("Неверный выбор.");
+                    break;
             }
+            
             return hashFunction;
         }
 
