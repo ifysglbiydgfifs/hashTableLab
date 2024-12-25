@@ -16,7 +16,6 @@ namespace HashTablesTester
                 
                 int currentClusterLength = 0;
                 int maxClusterLength = 0;
-                int totalClusterLength = 0;
 
                 for (int i = 0; i < tableSize; i++)
                 {
@@ -26,7 +25,6 @@ namespace HashTablesTester
                     {
                         filledSlots++;
                         currentClusterLength++;
-                        totalClusterLength++;
 
                         maxClusterLength = Math.Max(maxClusterLength, currentClusterLength);
                     }
@@ -38,14 +36,12 @@ namespace HashTablesTester
                 }
 
                 double fillFactor = (double)filledSlots / tableSize;
-                double avgClusterLength = (double)totalClusterLength / filledSlots;
 
                 Console.WriteLine($"Размер таблицы: {tableSize}");
                 Console.WriteLine($"Заполненные слоты: {filledSlots}");
                 Console.WriteLine($"Пустые слоты: {emptySlots}");
                 Console.WriteLine($"Коэффициент заполнения: {fillFactor:P2}");
                 Console.WriteLine($"Длина самого длинного кластера: {maxClusterLength}");
-                Console.WriteLine($"Средняя длина кластера: {avgClusterLength:F2}");
             }
             if (hashTable is ChainHashTable chainHashTable)
             {

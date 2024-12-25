@@ -6,7 +6,7 @@ namespace HashTablesTester
     public interface IHashTableTester
     {
         void RunTests(IHashTable hashTable);
-        void TestInsertSearchDelete(IHashTable hashTable);
+        void TestInsertion(IHashTable hashTable);
         void TestTableStatistics(IHashTable hashTable);
     }
 }

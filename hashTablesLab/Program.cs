@@ -77,6 +77,17 @@ namespace hashTablesLab
             if (hashTable != null && tester != null)
             {
                 tester.RunTests(hashTable);
+                Console.WriteLine("1 - Вывести таблицу");
+                Console.WriteLine("0. Назад.");
+                int showTable = ParseInput();
+                switch (showTable)
+                {
+                    case 1:
+                        hashTable.Print();
+                        break;
+                    case 2:
+                        break;
+                }
             }
         }
         static IHashTable ChooseChainHashFunction()
@@ -89,7 +100,6 @@ namespace hashTablesLab
             Console.WriteLine("4 - Secure Hash Algorithm 256-bit");
             Console.WriteLine("5 - FNV-1");
             Console.WriteLine("6 - MurmurHash3");
-            
             Console.WriteLine("0 - Выход");
 
             int hashFunctionOption = ParseInput();
@@ -129,6 +139,8 @@ namespace hashTablesLab
             Console.WriteLine("1 - Линейное пробирование");
             Console.WriteLine("2 - Квадратичное пробирование");
             Console.WriteLine("3 - Двойное хеширование");
+            Console.WriteLine("4 - Экспоненциальное пробирования");
+            Console.WriteLine("5 - Фибоначчиевое пробирование");
 
             int probingOption = ParseInput();
             switch (probingOption)
@@ -144,6 +156,12 @@ namespace hashTablesLab
                     IHashFunction secondHashFunction = ChooseSecondaryHashFunction();
                     probingFunction = new DoubleHashing(secondHashFunction);
                     break;
+                case 4:
+                    probingFunction = new ExponentialProbing();
+                    break;
+                case 5:
+                    probingFunction = new FibonacciProbing();
+                    break;
                 default:
                     Console.WriteLine("Неверный выбор метода пробирования.");
                     break;
@@ -152,7 +170,6 @@ namespace hashTablesLab
 
             Console.WriteLine("Выберите вспомогательную хеш-функцию");
             IHashFunction hashFunction = ChooseSecondaryHashFunction();
-    
             return new OpenAddressingHashTable(hashFunction, probingFunction);
         }
 
@@ -161,6 +178,10 @@ namespace hashTablesLab
             IHashFunction hashFunction = null;
             Console.WriteLine("1 - Хеш-функция на основе деления");
             Console.WriteLine("2 - Хеш-функция на основе умножения");
+            Console.WriteLine("3 - Хеш-функция на основе XOR");
+            Console.WriteLine("4 - Secure Hash Algorithm 256-bit");
+            Console.WriteLine("5 - FNV-1");
+            Console.WriteLine("6 - MurmurHash3");
             Console.WriteLine("0 - Выход");
 
             int hashFunctionOption = ParseInput();
@@ -171,6 +192,18 @@ namespace hashTablesLab
                     break;
                 case 2:
                     hashFunction = new MultiplicationHashFunction();
+                    break;
+                case 3:
+                    hashFunction = new SHA256HashFunction();
+                    break;
+                case 4:
+                    hashFunction = new FNV1HashFunction();
+                    break;
+                case 5:
+                    hashFunction = new MurmurHashFunction();
+                    break;
+                case 6:
+                    hashFunction = new XORHashFunction();
                     break;
                 case 0:
                     return null;

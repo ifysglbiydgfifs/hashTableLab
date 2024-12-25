@@ -159,5 +159,59 @@ namespace HashFunctions
             return (hash1 + i * hash2) % tableSize;
         }
     }
+    public class TwoDimensionalProbing : IOpenHashFunction
+    {
+        private IHashFunction hashFunction1;
+        private IHashFunction hashFunction2;
+
+        public TwoDimensionalProbing(IHashFunction hashFunction1, IHashFunction hashFunction2)
+        {
+            this.hashFunction1 = hashFunction1;
+            this.hashFunction2 = hashFunction2;
+        }
+
+        public int Hash(string key, int i, int tableSize)
+        {
+            int hash1 = hashFunction1.Hash(key, tableSize);
+            int hash2 = hashFunction2.Hash(key, tableSize);
+            return (hash1 + i * hash2 + i * i) % tableSize;
+        }
+    }
+    
+    public class ExponentialProbing : IOpenHashFunction
+    {
+        public int Hash(string key, int i, int tableSize)
+        {
+            int baseIndex = StringKeyToInt.Convert(key) % tableSize;
+            int step = (int)Math.Pow(2, i);
+            return (baseIndex + step) % tableSize;
+        }
+    }
+
+    public class FibonacciProbing : IOpenHashFunction
+    {
+        private int Fibonacci(int n)
+        {
+            if (n == 0) return 0;
+            if (n == 1) return 1;
+
+            int a = 0;
+            int b = 1;
+            int fib = 1;
+
+            for (int i = 2; i <= n; i++)
+            {
+                fib = a + b;
+                a = b;
+                b = fib;
+            }
+            return fib;
+        }
+        public int Hash(string key, int i, int tableSize)
+        {
+            int fibStep = Fibonacci(i);
+            return (StringKeyToInt.Convert(key) + fibStep) % tableSize;
+        }
+    }
 
 }

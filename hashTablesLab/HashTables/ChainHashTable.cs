@@ -6,19 +6,20 @@ namespace HashTables
 {
     class ChainHashTable : IHashTable
     {
-        private const int _tableSize = 10000;
+        private const int _tableSize = 1000;
+        private int _elementCount = 0;
         private LinkedList<string, string>[] _table = new LinkedList<string, string>[_tableSize];
         private IHashFunction _hashFunction;
         
         public ChainHashTable(IHashFunction hashFunction)
         {
             _hashFunction = hashFunction;
-
             for (int i = 0; i < _tableSize; i++)
             {
                 _table[i] = new LinkedList<string, string>();
             }
         }
+
         public object GetTable() => _table;
         public int GetTableSize() => _tableSize;
         
@@ -29,37 +30,30 @@ namespace HashTables
             
             return _table[index];
         }
-        public int Count()
-        {
-            int totalCount = 0;
-            for (int i = 0; i < _tableSize; i++)
-            {
-                totalCount += _table[i].Count;
-            }
-            return totalCount;
-        }
-
         private int GetHash(string key)
         {
             return _hashFunction.Hash(key, _tableSize);
         }
         public void Insert(string key, string value)
         {
-            /*if (Convert.ToInt32(key) < 0 || Convert.ToInt32(key) >= _tableSize)
+            if (_elementCount >= _tableSize)
             {
-                Console.WriteLine($"Ключ {key} должен быть в пределах от 0 до {_tableSize - 1}. Вставка не выполнена.");
+                Console.WriteLine("Таблица заполнена, вставка невозможна.");
                 return;
-            }*/
+            }
 
             int hash = GetHash(key);
             if (_table[hash].Search(key) != null)
             {
-                Console.WriteLine($"Элемент с ключом {key} уже существует. Вставка не выполнена.");
+                Console.WriteLine($"Элемент с хешкодом {hash} [{key}:{value}] уже существует. Вставка не выполнена.");
                 return;
             }
+        
             _table[hash].Insert(key, value);
-            Console.WriteLine($"Элемент с ключом {key} успешно вставлен.");
+            _elementCount++;
+            Console.WriteLine($"Элемент с хешкодом {hash} [{key}:{value}] успешно вставлен.");
         }
+
 
         public string Search(string key)
         {
@@ -82,6 +76,7 @@ namespace HashTables
                 var current = _table[i].Head;
                 if (current != null)
                 {
+                    Console.Write($"{i} ");
                     isPrinted = true;
                     _table[i].Print();
                     Console.WriteLine();

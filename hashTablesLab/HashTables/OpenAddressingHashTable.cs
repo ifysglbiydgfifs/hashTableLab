@@ -5,7 +5,7 @@ namespace HashTables
 {
     public class OpenAddressingHashTable : IHashTable
     {
-        private const int _tableSize = 10000;
+        private const int _tableSize = 30;
         private (string Key, string Value)[] _table;
         private IHashFunction _hashFunction;
         private IOpenHashFunction _probingFunction;
@@ -15,7 +15,7 @@ namespace HashTables
             _hashFunction = hashFunction;
             _probingFunction = probingFunction;
             _table = new (string, string)[_tableSize];
-
+        
             for (int i = 0; i < _tableSize; i++)
             {
                 _table[i] = (null, null);
@@ -52,13 +52,14 @@ namespace HashTables
 
                 if (_table[index].Key != null && !_table[index].Key.Equals("[deleted]") && _table[index].Key.Equals(key))
                 {
-                    Console.WriteLine($"Элемент с ключом {key} уже существует. Вставка не выполнена.");
+                    Console.WriteLine($"Элемент с хешкодом {hash} [{key}:{value}] уже существует. Вставка не выполнена.");
                     return;
                 }
+
                 if (_table[index].Key == null || _table[index].Key.Equals("[deleted]"))
                 {
                     _table[index] = (key, value);
-                    Console.WriteLine($"Элемент с ключом {key} успешно вставлен.");
+                    Console.WriteLine($"Элемент с хешкодом {hash} [{key}:{value}] успешно вставлен.");
                     return;
                 }
 
@@ -67,8 +68,6 @@ namespace HashTables
 
             Console.WriteLine("Таблица заполнена, вставка невозможна.");
         }
-
-
         public string Search(string key)
         {
             int hash = GetHash(key);
@@ -122,7 +121,7 @@ namespace HashTables
             {
                 if (_table[i].Key != null && !_table[i].Key.Equals("[deleted]"))
                 {
-                    Console.WriteLine($"[{_table[i].Key}, {_table[i].Value}]");
+                    Console.WriteLine($"{i} [{_table[i].Key}, {_table[i].Value}]");
                     isEmpty = false;
                 }
             }
